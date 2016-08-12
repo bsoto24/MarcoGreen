@@ -18,10 +18,17 @@ import pl.droidsonroids.gif.GifImageView;
  */
 public class SplashActivity extends AppCompatActivity {
 
+    private SessionManager sessionManager;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        sessionManager = SessionManager.getInstance(getBaseContext());
+        if (sessionManager.getDataMilliseconds() == 0) {
+            sessionManager.setDataMilliseconds(Calendar.getInstance().getTimeInMillis());
+        }
 
         Thread splashThread = new Thread() {
             @Override
