@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="options">
+        <item>Inicio</item>
+        <item>¿Qué hacemos?</item>
+        <item>¿Como así?</item>
+    </string-array>
+</resources>

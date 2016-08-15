@@ -18,8 +18,7 @@ import doapps.marcogreen.R;
 /**
  * Created by Bryam Soto on 11/08/2016.
  */
-public class WaterProgress extends View{
-    private int score;
+public class WaterProgress extends View {
     private int progress;
     private Paint circlePaint;
     private static final int MSG_WAVE = 10;
@@ -184,9 +183,4 @@ public class WaterProgress extends View{
         invalidate();
     }
 
-    public void setScore(int score) {
-
-        this.score = score;
-        invalidate();
-    }
 }

@@ -16,6 +16,7 @@ public class SessionManager {
     private static SessionManager sessionManager = null;
 
     public static final String DATA_MILLISECONDS = "dataMilliseconds";
+    public static final String CLEANED_GRAMS = "cleanedGrams";
 
     private SessionManager(Context context) {
         this.context = context;
@@ -30,13 +31,23 @@ public class SessionManager {
         return sessionManager;
     }
 
-    public float getDataMilliseconds() {
-        return preferences.getFloat(DATA_MILLISECONDS, 0);
+    public long getDataMilliseconds() {
+        return preferences.getLong(DATA_MILLISECONDS, 0);
     }
 
-    public void setDataMilliseconds(float dataMilliseconds) {
-        editor.putFloat(DATA_MILLISECONDS, dataMilliseconds);
+    public void setDataMilliseconds(long dataMilliseconds) {
+        editor.putLong(DATA_MILLISECONDS, dataMilliseconds);
         editor.commit();
     }
+
+    public float getCleanedGrams() {
+        return preferences.getFloat(CLEANED_GRAMS, 0);
+    }
+
+    public void setCleanedGrams(float cleanedGrams) {
+        editor.putFloat(CLEANED_GRAMS, cleanedGrams);
+        editor.commit();
+    }
+
 
 }

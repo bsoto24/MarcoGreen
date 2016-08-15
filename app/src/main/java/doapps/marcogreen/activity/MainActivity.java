@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private List<Fragment> mFragmentList;
     private Class mClass[] = {FragmentPower.class, FragmentAbout.class, FragmentHow.class};
     private Fragment mFragment[] = {new FragmentPower(), new FragmentAbout(), new FragmentHow()};
-    private String mTitles[] = {"Inicio", "¿Qué hacemos?", "¿Como así?"};
+    private String mTitles[];
+
     private int mImages[] = {
             R.drawable.tab_power,
             R.drawable.tab_about,
@@ -41,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
-
     }
 
     private void init() {
@@ -55,7 +56,8 @@ public class MainActivity extends AppCompatActivity {
         mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
 
-        mFragmentList = new ArrayList<Fragment>();
+        mFragmentList = new ArrayList<>();
+        mTitles = getResources().getStringArray(R.array.options);
 
         mTabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
         mTabHost.getTabWidget().setDividerDrawable(null);

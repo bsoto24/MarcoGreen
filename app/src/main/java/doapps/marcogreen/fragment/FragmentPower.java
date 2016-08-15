@@ -10,10 +10,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.Calendar;
 
 import doapps.marcogreen.R;
 import doapps.marcogreen.session.SessionManager;
+import doapps.marcogreen.utils.Constants;
 import doapps.marcogreen.widget.WaterProgress;
 
 
@@ -24,16 +26,16 @@ public class FragmentPower extends Fragment {
 
     private final String TAG = getClass().getSimpleName();
 
+    private View root;
     private WaterProgress waterProgress;
     private Button btnClean;
-    private View root;
-    private TextView tvScore, tvContamination;
-    private int score = 1;
+    private TextView tvScore, tvGramos;
     private SessionManager sessionManager;
-    private double tiempoInicial, milisegundos;
-    private int segundos, minutos;
-
+    private Long tiempoInicial, tiempoActual, milisegundos;
+    private int progress = 99, segundos, minutos;
     private boolean flagLoad, flagClean;
+    private double contamination, decCont = 0;
+    private float gramosLimpiados;
 
     @Nullable
     @Override
@@ -49,54 +51,73 @@ public class FragmentPower extends Fragment {
         waterProgress = (WaterProgress) root.findViewById(R.id.water_progress);
         btnClean = (Button) root.findViewById(R.id.btn_clean);
         tvScore = (TextView) root.findViewById(R.id.tv_score);
-        tvContamination = (TextView) root.findViewById(R.id.tv_contamination);
+        tvGramos = (TextView) root.findViewById(R.id.tv_gramos);
 
         sessionManager = SessionManager.getInstance(getContext());
         tiempoInicial = sessionManager.getDataMilliseconds();
+        gramosLimpiados = sessionManager.getCleanedGrams();
 
-        waterProgress.setScore(100);
-        waterProgress.setProgress(score);
+        tvGramos.setText(new DecimalFormat("##.##").format(gramosLimpiados));
+
+        waterProgress.setProgress(progress);
 
         flagLoad = true;
         flagClean = false;
-
-        initCounter();
         loadContainer();
         cleanContainer();
 
         btnClean.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                sessionManager.setDataMilliseconds(Calendar.getInstance().getTimeInMillis());
+                tiempoInicial = sessionManager.getDataMilliseconds();
                 flagClean = true;
                 flagLoad = false;
+                decCont = contamination / 100;
+                gramosLimpiados = (float) (gramosLimpiados + contamination);
+                sessionManager.setCleanedGrams(gramosLimpiados);
+                tvGramos.setText(new DecimalFormat("##.##").format(gramosLimpiados));
+                if (progress > 99) {
+                    progress = 99;
+                }
             }
         });
 
         return root;
     }
 
-    /**Thread methods**/
+    /**
+     * Thread methods
+     **/
     private void loadContainer() {
         Thread loadThread = new Thread() {
             @Override
             public void run() {
                 while (true) {
-                    try {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (score < 99 && flagLoad && !flagClean) {
-                                    waterProgress.setProgress(score);
-                                    tvScore.setText(score+"/100");
-                                    score++;
-                                } else {
-                                    flagLoad = false;
+                    if (!flagClean) {
+                        tiempoActual = Calendar.getInstance().getTimeInMillis();
+                        milisegundos = tiempoActual - tiempoInicial;
+                        segundos = (int) (milisegundos / 1000);
+                        minutos = (int) (milisegundos / (60 * 1000));
+                        progress = (int) (segundos * 100) / 60;
+                        contamination = segundos * Constants.CO2;
+                        try {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tvScore.setText(new DecimalFormat("##.##").format(contamination) + " gr. de CO2\ncontaminado");
+                                    if (progress < 99 && flagLoad) {
+                                        waterProgress.setProgress(progress);
+                                    } else {
+                                        flagLoad = false;
+                                    }
                                 }
-                            }
-                        });
-                        sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+
+                            });
+                            sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -105,18 +126,20 @@ public class FragmentPower extends Fragment {
     }
 
     private void cleanContainer() {
-        Thread tClean = new Thread() {
+        Thread cleanThread = new Thread() {
             @Override
             public void run() {
                 while (true) {
+                    Log.e(TAG, contamination + "");
                     try {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if (score > 0 && flagClean && !flagLoad) {
-                                    waterProgress.setProgress(score);
-                                    tvScore.setText(score+"/100");
-                                    score--;
+                                if (progress > 0 && flagClean && !flagLoad) {
+                                    progress--;
+                                    contamination = contamination - decCont;
+                                    waterProgress.setProgress(progress);
+                                    tvScore.setText(new DecimalFormat("##.##").format(contamination) + " gr. de CO2\ncontaminado");
                                 } else {
                                     flagClean = false;
                                     flagLoad = true;
@@ -130,31 +153,7 @@ public class FragmentPower extends Fragment {
                 }
             }
         };
-        tClean.start();
+        cleanThread.start();
     }
 
-    private void initCounter(){
-        Thread counterThread = new Thread() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        milisegundos = Calendar.getInstance().getTimeInMillis() - tiempoInicial;
-                        segundos = (int) milisegundos / 1000;
-                        minutos = (int) milisegundos / (60 * 1000);
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                tvContamination.setText("min: " + minutos + "\nseg: " + segundos);
-                            }
-                        });
-                        sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-        counterThread.start();
-    }
 }

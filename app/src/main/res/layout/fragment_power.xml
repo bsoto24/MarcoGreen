@@ -98,9 +98,9 @@
             android:layout_marginLeft="5dp"
             android:layout_toEndOf="@+id/tv_gramos"
             android:gravity="bottom"
-            android:text="GRAMOS"
+            android:text="GRAMOS\nLIMPIADOS"
             android:textColor="@color/black"
-            android:textSize="12sp" />
+            android:textSize="10sp" />
 
     </RelativeLayout>
 
