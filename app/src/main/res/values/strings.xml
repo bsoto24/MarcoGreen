@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">MarcoGreen</string>
+    <string name="about">Convierte a tu smartphone en Carbono Neutral.\nCompensamos las emisiones de Dióxido de Carbono (CO2) originados por el uso diario de tu móvil.</string>
+    <string name="how">Nuestras plantaciones forestales capturan CO2 y recuperan bosques degradados en la Selva Amazónica.</string>
+    <string name="share_text">Comparte esta aplicación con tus amigos para seguir limpiando C02</string>
+    <string name="share_link">https://i.ytimg.com/vi/u-oY1WKhI3E/hqdefault.jpg</string>
 </resources>

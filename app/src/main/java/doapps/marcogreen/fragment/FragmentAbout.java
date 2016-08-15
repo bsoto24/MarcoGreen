@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import doapps.marcogreen.R;
 
@@ -16,6 +17,7 @@ public class FragmentAbout extends Fragment {
 
 
     private View root;
+    private TextView tvAbout;
 
     @Nullable
     @Override
@@ -27,6 +29,9 @@ public class FragmentAbout extends Fragment {
         if (parent != null){
             parent.removeView(root);
         }
+
+        tvAbout = (TextView) root.findViewById(R.id.tv_about);
+        tvAbout.setText(getResources().getString(R.string.about));
         return root;
     }
 }

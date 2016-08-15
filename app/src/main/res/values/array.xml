@@ -5,4 +5,11 @@
         <item>¿Qué hacemos?</item>
         <item>¿Como así?</item>
     </string-array>
+
+    <string-array name="ic_titles">
+        <item>@drawable/ic_medal_4</item>
+        <item>@drawable/ic_medal_3</item>
+        <item>@drawable/ic_medal_2</item>
+        <item>@drawable/ic_medal_1</item>
+    </string-array>
 </resources>

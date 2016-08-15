@@ -7,4 +7,6 @@
     <color name="black">#000000</color>
     <color name="titleColor">#757575</color>
     <color name="titleColorSelected">#8ac24a</color>
+    <color name="light_gray">#e0e9f9</color>
+    <color name="yellow">#FFFF00</color>
 </resources>

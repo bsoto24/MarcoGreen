@@ -1,5 +1,6 @@
 package doapps.marcogreen.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,7 @@ import doapps.marcogreen.R;
 import doapps.marcogreen.fragment.FragmentAbout;
 import doapps.marcogreen.fragment.FragmentHow;
 import doapps.marcogreen.fragment.FragmentPower;
+import doapps.marcogreen.session.SessionManager;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -31,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private Class mClass[] = {FragmentPower.class, FragmentAbout.class, FragmentHow.class};
     private Fragment mFragment[] = {new FragmentPower(), new FragmentAbout(), new FragmentHow()};
     private String mTitles[];
+    private ImageView icShare;
 
     private int mImages[] = {
             R.drawable.tab_power,
@@ -48,13 +52,13 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
 
         initView();
-
         initEvent();
     }
 
     private void initView() {
         mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        icShare = (ImageView) findViewById(R.id.ic_share);
 
         mFragmentList = new ArrayList<>();
         mTitles = getResources().getStringArray(R.array.options);
@@ -117,6 +121,25 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageScrollStateChanged(int state) {
 
+            }
+        });
+
+        icShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    SessionManager sessionManager = SessionManager.getInstance(getBaseContext());
+                    double cleanedGrams = sessionManager.getCleanedGrams();
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setType("text/plain");
+                    i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
+                    String sAux = "\n" + "Ya voy limpiando " + new DecimalFormat("##.##").format(cleanedGrams) + " gr. de C02, inténtalo tu también" + ":\n\n";
+                    sAux = sAux + getString(R.string.share_link);
+                    i.putExtra(Intent.EXTRA_TEXT, sAux);
+                    startActivity(Intent.createChooser(i, getString(R.string.share_text)));
+                } catch (Exception e) {
+                    Log.e("FragmentHow", e.toString());
+                }
             }
         });
 
