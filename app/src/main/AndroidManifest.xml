@@ -21,6 +21,9 @@
         <activity
             android:name=".activity.MainActivity"
             android:screenOrientation="portrait" />
+
+        <service android:name=".service.NotifyService" />
+
     </application>
 
 </manifest>

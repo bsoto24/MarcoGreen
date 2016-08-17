@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ import doapps.marcogreen.R;
 import doapps.marcogreen.fragment.FragmentAbout;
 import doapps.marcogreen.fragment.FragmentHow;
 import doapps.marcogreen.fragment.FragmentPower;
+import doapps.marcogreen.service.NotifyService;
 import doapps.marcogreen.session.SessionManager;
 
 
@@ -34,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private Class mClass[] = {FragmentPower.class, FragmentAbout.class, FragmentHow.class};
     private Fragment mFragment[] = {new FragmentPower(), new FragmentAbout(), new FragmentHow()};
     private String mTitles[];
-    private ImageView icShare;
+    private ImageButton icShare;
 
     private int mImages[] = {
             R.drawable.tab_power,
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
+        startService(new Intent(MainActivity.this, NotifyService.class));
     }
 
     private void init() {
@@ -58,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         mTabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        icShare = (ImageView) findViewById(R.id.ic_share);
+        icShare = (ImageButton) findViewById(R.id.ic_share);
 
         mFragmentList = new ArrayList<>();
         mTitles = getResources().getStringArray(R.array.options);

@@ -3,7 +3,6 @@ package doapps.marcogreen.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,13 +30,13 @@ public class FragmentPower extends Fragment {
     private View root;
     private WaterProgress waterProgress;
     private Button btnClean;
-    private TextView tvScore, tvGramos, tvTitle, tvGrade, tvCleanedDays;
+    private TextView tvScore, tvCleanedGrams, tvTitle, tvGrade, tvCleanedDays;
     private SessionManager sessionManager;
     private Long tiempoInicial, tiempoActual, milisegundos;
     private int progress = 99, segundos, minutos, cleanedDays;
     private boolean flagLoad, flagClean;
     private double contamination, decCont = 0;
-    private float gramosLimpiados;
+    private float cleanedGrams;
     private User user;
     private ImageView icMedal;
 
@@ -51,48 +50,44 @@ public class FragmentPower extends Fragment {
         if (parent != null) {
             parent.removeView(root);
         }
-
         waterProgress = (WaterProgress) root.findViewById(R.id.water_progress);
         btnClean = (Button) root.findViewById(R.id.btn_clean);
         tvScore = (TextView) root.findViewById(R.id.tv_score);
-        tvGramos = (TextView) root.findViewById(R.id.tv_gramos);
+        tvCleanedGrams = (TextView) root.findViewById(R.id.tv_cleaned_grams);
         tvCleanedDays = (TextView) root.findViewById(R.id.tv_cleaned_days);
         tvTitle = (TextView) root.findViewById(R.id.tv_title);
         tvGrade = (TextView) root.findViewById(R.id.tv_grade);
         icMedal = (ImageView) root.findViewById(R.id.ic_medal);
 
         sessionManager = SessionManager.getInstance(getContext());
+
         tiempoInicial = sessionManager.getDataMilliseconds();
-        gramosLimpiados = sessionManager.getCleanedGrams();
+        cleanedGrams = sessionManager.getCleanedGrams();
         cleanedDays = sessionManager.getCleanedDays();
 
-        loadUser();
+        loadInfo();
+        runThreads();
+        onClickMethods();
 
-        tvGramos.setText(new DecimalFormat("##.##").format(gramosLimpiados));
+        return root;
+    }
 
-        waterProgress.setProgress(progress);
-
-        flagLoad = true;
-        flagClean = false;
-        loadContainer();
-        cleanContainer();
-
+    private void onClickMethods() {
         btnClean.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!flagClean) {
-                    sessionManager.setDataMilliseconds(Calendar.getInstance().getTimeInMillis());
-                    tiempoInicial = sessionManager.getDataMilliseconds();
                     flagClean = true;
                     flagLoad = false;
-                    decCont = contamination / 100;
-                    gramosLimpiados = (float) (gramosLimpiados + contamination);
-                    sessionManager.setCleanedGrams(gramosLimpiados);
-                    tvGramos.setText(new DecimalFormat("##.##").format(gramosLimpiados));
                     if (progress > 99) {
                         progress = 99;
                     }
-
+                    sessionManager.setDataMilliseconds(Calendar.getInstance().getTimeInMillis());
+                    tiempoInicial = sessionManager.getDataMilliseconds();
+                    cleanedGrams = (float) (cleanedGrams + contamination);
+                    tvCleanedGrams.setText(new DecimalFormat("##.##").format(cleanedGrams));
+                    sessionManager.setCleanedGrams(cleanedGrams);
+                    decCont = contamination / 100;
                     Calendar calendar = Calendar.getInstance();
                     String cleanedDate = calendar.get(Calendar.MONTH) + " " + calendar.get(Calendar.DAY_OF_MONTH) + " " + calendar.get(Calendar.YEAR) + " " + calendar.get(Calendar.SECOND);
                     String lastCleanedDate = sessionManager.getCleanedDate();
@@ -101,20 +96,29 @@ public class FragmentPower extends Fragment {
                         sessionManager.setCleanedDays(cleanedDays);
                         sessionManager.setCleanedDate(cleanedDate);
                     }
-                    loadUser();
+                    loadInfo();
                 }
             }
         });
-
-        return root;
     }
 
-    private void loadUser() {
+    private void runThreads() {
+        flagLoad = true;
+        flagClean = false;
+        loadContainer();
+        cleanContainer();
+    }
+
+    private void loadInfo() {
+        if (progress > 99) {
+            progress = 99;
+        }
         user = new User(cleanedDays, getContext());
         tvTitle.setText(user.getTitle());
         tvGrade.setText("GRADO " + user.getGrade());
         tvCleanedDays.setText(user.getCleanedDays() + "");
         icMedal.setImageDrawable(user.getIcMedal());
+        tvCleanedGrams.setText(new DecimalFormat("##.##").format(cleanedGrams));
     }
 
     /**
@@ -140,10 +144,10 @@ public class FragmentPower extends Fragment {
                                     if (progress < 99 && flagLoad) {
                                         waterProgress.setProgress(progress);
                                     } else {
+                                        waterProgress.setProgress(99);
                                         flagLoad = false;
                                     }
                                 }
-
                             });
                             sleep(1000);
                         } catch (InterruptedException e) {
@@ -162,21 +166,21 @@ public class FragmentPower extends Fragment {
             public void run() {
                 while (true) {
                     try {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (progress > 0 && flagClean && !flagLoad) {
-                                    progress--;
-                                    contamination = contamination - decCont;
+                        if (progress > 0 && flagClean && !flagLoad) {
+                            progress--;
+                            contamination = contamination - decCont;
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
                                     waterProgress.setProgress(progress);
                                     tvScore.setText(new DecimalFormat("##.##").format(contamination) + " gr. de CO2\ncontaminado");
-                                } else {
-                                    flagClean = false;
-                                    flagLoad = true;
                                 }
-                            }
-                        });
-                        sleep(50);
+                            });
+                        } else {
+                            flagClean = false;
+                            flagLoad = true;
+                        }
+                        sleep(60);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

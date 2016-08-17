@@ -62,7 +62,7 @@ public class WaterProgress extends View {
         /*BORDES*/
         circlePaint = new Paint();
         circlePaint.setColor(Color.BLACK);
-        circlePaint.setStrokeWidth(10);
+        circlePaint.setStrokeWidth(5);
         circlePaint.setAntiAlias(true);
         circlePaint.setStyle(Paint.Style.STROKE);
     }
@@ -179,10 +179,6 @@ public class WaterProgress extends View {
     public void setProgress(int progress) {
         this.progress = progress;
         invalidate();
-    }
-
-    public void setBorderColor(int color){
-        circlePaint.setColor(color);
     }
 
 }
