@@ -31,8 +31,8 @@ public class NotifyService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        counterTrack();
-        return super.onStartCommand(intent, flags, startId);
+        startService();
+        return Service.START_STICKY;
     }
 
     @Override
@@ -46,17 +46,13 @@ public class NotifyService extends Service {
         return null;
     }
 
-
-    /**
-     * Thread
-     **/
-    private void counterTrack() {
+    private void startService() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
                     try {
-                        if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) == 18 && Calendar.getInstance().get(Calendar.MINUTE) == 24 && Calendar.getInstance().get(Calendar.SECOND) == 0) {
+                        if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) == 15 && Calendar.getInstance().get(Calendar.MINUTE) == 33 && Calendar.getInstance().get(Calendar.SECOND) == 0) {
                             notification();
                         }
                         Thread.sleep(1000);
@@ -84,9 +80,17 @@ public class NotifyService extends Service {
 
         Uri notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         builder.setSound(notificationSound);
+        builder.setAutoCancel(true);
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        android.support.v4.app.TaskStackBuilder stackBuilder = android.support.v4.app.TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(MainActivity.class);
+        stackBuilder.addNextIntent(notificationIntent);
+        stackBuilder.addNextIntent(new Intent());
+
+        PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
 
         Notification notification = builder.build();

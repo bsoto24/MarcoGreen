@@ -3,12 +3,12 @@ package doapps.marcogreen.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -22,14 +22,14 @@ public class WaterProgress extends View {
     private int progress;
     private Paint circlePaint;
     private static final int MSG_WAVE = 10;
-    private int radius = dpToPx(100);
-    private int stroke = dpToPx(6);
+    private int radius = dpToPx(95);
+    private int stroke = dpToPx(5);
     private Paint paintInnerCircle;
     private Paint paintWater;
     private int centerXY;
     private Path path = new Path();
     private float mOffsetX = 0;
-    private double mWaveHeight = 8;
+    private double waveHeight = 5;
     private boolean isWaving = true;
 
     private Handler handler = new Handler() {
@@ -61,9 +61,9 @@ public class WaterProgress extends View {
     private void init() {
         /*BORDES*/
         circlePaint = new Paint();
-        circlePaint.setColor(Color.BLACK);
-        circlePaint.setStrokeWidth(5);
-        circlePaint.setAntiAlias(true);
+        circlePaint.setColor(ContextCompat.getColor(getContext(), R.color.yellow));
+        circlePaint.setStrokeWidth(0);
+        circlePaint.setAntiAlias(false);
         circlePaint.setStyle(Paint.Style.STROKE);
     }
 
@@ -90,32 +90,13 @@ public class WaterProgress extends View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int width, height;
 
-        int widthSize = View.MeasureSpec.getSize(widthMeasureSpec);
-        int widthMode = View.MeasureSpec.getMode(widthMeasureSpec);
-
-        if (widthMode == View.MeasureSpec.EXACTLY) {
-            width = widthSize;
-        } else {
-            width = radius * 2 + stroke * 2;
-        }
-
-        int heightSize = View.MeasureSpec.getSize(heightMeasureSpec);
-        int heightMode = View.MeasureSpec.getMode(heightMeasureSpec);
-
-        if (heightMode == View.MeasureSpec.EXACTLY) {
-            height = heightSize;
-        } else {
-            height = radius * 2 + stroke * 2;
-        }
+        width = radius * 2 + stroke * 2;
+        height = radius * 2 + stroke * 2;
 
         int size = Math.min(width, height);
         setMeasuredDimension(size, size);
 
         centerXY = size / 2;
-
-        if (centerXY <= radius + stroke) {
-            radius = centerXY - stroke;
-        }
     }
 
     @Override
@@ -157,7 +138,7 @@ public class WaterProgress extends View {
         float x, y;
         for (int i = 0; i < absX * 2; i++) {
             x = i + startX;
-            y = (float) (mWaveHeight * Math.sin((i * 1.5f + mOffsetX) / radius * Math.PI)) + (radius * 2
+            y = (float) (waveHeight * Math.sin((i * 1.5f + mOffsetX) / radius * Math.PI)) + (radius * 2
                     - absY) + stroke;
             if (i == 0) {
                 path.moveTo(x, y);

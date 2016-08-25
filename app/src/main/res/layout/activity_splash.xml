@@ -7,19 +7,18 @@
     android:orientation="vertical">
 
     <ImageView
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:src="@drawable/ic_phone"/>
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/img_splash"/>
 
-    <TextView
+    <doapps.marcogreen.widget.TextViewBold
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:gravity="center"
-        android:fontFamily="serif-monospace"
         android:text="TECNOLOGÍA \nLIBRE DE CO2"
         android:textColor="@color/white"
-        android:textSize="30sp" />
+        android:textSize="35sp" />
 
 </LinearLayout>

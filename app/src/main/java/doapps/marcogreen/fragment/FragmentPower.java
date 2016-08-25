@@ -3,11 +3,11 @@ package doapps.marcogreen.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
@@ -16,7 +16,7 @@ import java.util.Calendar;
 import doapps.marcogreen.R;
 import doapps.marcogreen.entity.User;
 import doapps.marcogreen.session.SessionManager;
-import doapps.marcogreen.utils.Constants;
+import doapps.marcogreen.settings.Constants;
 import doapps.marcogreen.widget.WaterProgress;
 
 
@@ -33,12 +33,11 @@ public class FragmentPower extends Fragment {
     private TextView tvScore, tvCleanedGrams, tvTitle, tvGrade, tvCleanedDays;
     private SessionManager sessionManager;
     private Long tiempoInicial, tiempoActual, milisegundos;
-    private int progress = 99, segundos, minutos, cleanedDays;
+    private int progress = 99, minutos, cleanedDays;
     private boolean flagLoad, flagClean;
     private double contamination, decCont = 0;
     private float cleanedGrams;
     private User user;
-    private ImageView icMedal;
 
     @Nullable
     @Override
@@ -57,7 +56,6 @@ public class FragmentPower extends Fragment {
         tvCleanedDays = (TextView) root.findViewById(R.id.tv_cleaned_days);
         tvTitle = (TextView) root.findViewById(R.id.tv_title);
         tvGrade = (TextView) root.findViewById(R.id.tv_grade);
-        icMedal = (ImageView) root.findViewById(R.id.ic_medal);
 
         sessionManager = SessionManager.getInstance(getContext());
 
@@ -89,7 +87,7 @@ public class FragmentPower extends Fragment {
                     sessionManager.setCleanedGrams(cleanedGrams);
                     decCont = contamination / 100;
                     Calendar calendar = Calendar.getInstance();
-                    String cleanedDate = calendar.get(Calendar.MONTH) + " " + calendar.get(Calendar.DAY_OF_MONTH) + " " + calendar.get(Calendar.YEAR) + " " + calendar.get(Calendar.SECOND);
+                    String cleanedDate = calendar.get(Calendar.MONTH) + " " + calendar.get(Calendar.DAY_OF_MONTH) + " " + calendar.get(Calendar.YEAR);
                     String lastCleanedDate = sessionManager.getCleanedDate();
                     if (!cleanedDate.equals(lastCleanedDate)) {
                         cleanedDays++;
@@ -117,7 +115,7 @@ public class FragmentPower extends Fragment {
         tvTitle.setText(user.getTitle());
         tvGrade.setText("GRADO " + user.getGrade());
         tvCleanedDays.setText(user.getCleanedDays() + "");
-        icMedal.setImageDrawable(user.getIcMedal());
+        //icMedal.setImageDrawable(user.getIcMedal());
         tvCleanedGrams.setText(new DecimalFormat("##.##").format(cleanedGrams));
     }
 
@@ -132,10 +130,9 @@ public class FragmentPower extends Fragment {
                     if (!flagClean) {
                         tiempoActual = Calendar.getInstance().getTimeInMillis();
                         milisegundos = tiempoActual - tiempoInicial;
-                        segundos = (int) (milisegundos / 1000);
                         minutos = (int) (milisegundos / (60 * 1000));
-                        progress = (int) (segundos * 100) / 60;
-                        contamination = segundos * Constants.CO2;
+                        progress = (int) (minutos * 100) / 1440;
+                        contamination = minutos * Constants.CO2;
                         try {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override

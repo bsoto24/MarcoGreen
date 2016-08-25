@@ -22,9 +22,7 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/bosque"
-                app:border_color="@color/black"
-                app:border_width="5dp" />
+                android:src="@drawable/bosque"/>
 
             <doapps.marcogreen.widget.WaterProgress
                 android:id="@+id/water_progress"
@@ -33,6 +31,14 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true" />
 
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:src="@color/trans"
+                app:border_color="@color/yellow"
+                app:border_width="7dp"/>
             <Button
                 android:id="@+id/btn_clean"
                 android:layout_width="100dp"
@@ -45,7 +51,7 @@
                 android:textColor="@color/black"
                 android:textSize="13sp" />
 
-            <TextView
+            <doapps.marcogreen.widget.TextViewRegular
                 android:id="@+id/tv_score"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -69,7 +75,7 @@
         android:gravity="center">
 
         <RelativeLayout
-            android:layout_width="220dp"
+            android:layout_width="200dp"
             android:layout_height="45dp"
             android:layout_gravity="center"
             android:background="@drawable/selector_white"
@@ -83,7 +89,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="20dp"
                 android:layout_marginStart="17dp"
-                android:src="@drawable/ic_contamination" />
+                android:src="@drawable/ic_co2" />
 
             <TextView
                 android:id="@+id/textView4"
@@ -95,7 +101,7 @@
                 android:textSize="7sp" />
 
 
-            <TextView
+            <doapps.marcogreen.widget.TextViewRegular
                 android:id="@+id/tv_cleaned_grams"
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
@@ -107,7 +113,7 @@
                 android:textColor="@color/black"
                 android:textSize="22sp" />
 
-            <TextView
+            <doapps.marcogreen.widget.TextViewRegular
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
@@ -143,20 +149,21 @@
 
             <ImageView
                 android:id="@+id/ic_medal"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:src="@drawable/ic_medal_4" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/img_medalla" />
 
-            <TextView
+            <doapps.marcogreen.widget.TextViewRegular
                 android:id="@+id/tv_grade"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="8dp"
                 android:text="NIVEL"
                 android:textColor="@color/white"
                 android:textSize="18sp" />
 
-            <TextView
+            <doapps.marcogreen.widget.TextViewRegular
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -181,20 +188,21 @@
             android:paddingTop="20dp">
 
             <ImageView
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:src="@drawable/ic_calendar" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/img_calendar" />
 
-            <TextView
+            <doapps.marcogreen.widget.TextViewRegular
                 android:id="@+id/tv_cleaned_days"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="8dp"
                 android:text="DIAS"
                 android:textColor="@color/white"
                 android:textSize="18sp" />
 
-            <TextView
+            <doapps.marcogreen.widget.TextViewRegular
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="DÍAS DE USO"

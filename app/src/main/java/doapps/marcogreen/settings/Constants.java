@@ -1,4 +1,4 @@
-package doapps.marcogreen.utils;
+package doapps.marcogreen.settings;
 
 /**
  * Created by Bryam Soto on 15/08/2016.
