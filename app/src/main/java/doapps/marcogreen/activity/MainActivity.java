@@ -26,6 +26,7 @@ import doapps.marcogreen.fragment.FragmentHow;
 import doapps.marcogreen.fragment.FragmentPower;
 import doapps.marcogreen.service.NotifyService;
 import doapps.marcogreen.session.SessionManager;
+import doapps.marcogreen.settings.Constants;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
                     i.setType("text/plain");
                     i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name));
                     String sAux = "\n" + "Ya voy limpiando " + new DecimalFormat("##.##").format(cleanedGrams) + " gr. de C02, inténtalo tu también" + ":\n\n";
-                    sAux = sAux + getString(R.string.share_link);
+                    sAux = sAux + Constants.SHARE_LINK;
                     i.putExtra(Intent.EXTRA_TEXT, sAux);
                     startActivity(Intent.createChooser(i, getString(R.string.share_text)));
                 } catch (Exception e) {
@@ -145,7 +146,5 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
-
 }

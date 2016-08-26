@@ -22,7 +22,7 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/bosque"/>
+                android:src="@drawable/bosque" />
 
             <doapps.marcogreen.widget.WaterProgress
                 android:id="@+id/water_progress"
@@ -38,7 +38,8 @@
                 android:layout_centerHorizontal="true"
                 android:src="@color/trans"
                 app:border_color="@color/yellow"
-                app:border_width="5dp"/>
+                app:border_width="5dp" />
+
             <Button
                 android:id="@+id/btn_clean"
                 android:layout_width="100dp"

@@ -1,8 +1,7 @@
 <resources>
-    <string name="app_name">MarcoGreen</string>
+    <string name="app_name">FreeTechCO2</string>
     <string name="about">Convierte a tu smartphone en Carbono Neutral.\nCompensamos las emisiones de Dióxido de Carbono (CO2) originados por el uso diario de tu móvil.</string>
     <string name="how">Nuestras plantaciones forestales capturan CO2 y recuperan bosques degradados en la Selva Amazónica.</string>
     <string name="share_text">Comparte esta aplicación con tus amigos para reducir la huella de carbono</string>
-    <string name="share_link">http://larepublica.pe/12-11-2014/cade-2014-carbono-neutral-para-darle-un-respiro-al-ambiente</string>
     <string name="notify_message">Hora de limpiar el Medio Ambiente</string>
 </resources>

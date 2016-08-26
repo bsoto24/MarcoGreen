@@ -17,10 +17,11 @@ public class SessionManager {
     private Context context;
     private static SessionManager sessionManager = null;
 
-    public static final String DATE_MILLISECONDS = "dateMilliseconds";
     public static final String CLEANED_GRAMS = "cleanedGrams";
     public static final String CLEANED_DATE = "cleanedDate";
     public static final String CLEANED_DAYS = "cleanedDays";
+    public static final String SECONDS_ACTIVE = "secondsActive";
+
 
     private SessionManager(Context context) {
         this.context = context;
@@ -33,15 +34,6 @@ public class SessionManager {
             sessionManager = new SessionManager(context);
         }
         return sessionManager;
-    }
-
-    public long getDataMilliseconds() {
-        return preferences.getLong(DATE_MILLISECONDS, 0);
-    }
-
-    public void setDataMilliseconds(long dataMilliseconds) {
-        editor.putLong(DATE_MILLISECONDS, dataMilliseconds);
-        editor.commit();
     }
 
     public float getCleanedGrams() {
@@ -71,4 +63,17 @@ public class SessionManager {
         editor.commit();
     }
 
+    public int getSecondsActive() {
+        return preferences.getInt(SECONDS_ACTIVE, 0);
+    }
+
+    public void setSecondsActive(int secondsActive) {
+        editor.putInt(SECONDS_ACTIVE, secondsActive);
+        editor.commit();
+    }
+
+    public void addSecondActive(){
+        editor.putInt(SECONDS_ACTIVE, preferences.getInt(SECONDS_ACTIVE, 0) + 1);
+        editor.commit();
+    }
 }

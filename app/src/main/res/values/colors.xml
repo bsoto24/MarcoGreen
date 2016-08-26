@@ -10,4 +10,5 @@
     <color name="light_gray">#e0e9f9</color>
     <color name="yellow">#fca901</color>
     <color name="trans">#00000000</color>
+    <color name="black_trans">#99000000</color>
 </resources>

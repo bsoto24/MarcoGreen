@@ -3,7 +3,6 @@ package doapps.marcogreen.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,11 +31,9 @@ public class FragmentPower extends Fragment {
     private Button btnClean;
     private TextView tvScore, tvCleanedGrams, tvTitle, tvGrade, tvCleanedDays;
     private SessionManager sessionManager;
-    private Long tiempoInicial, tiempoActual, milisegundos;
-    private int progress = 99, minutos, cleanedDays;
+    private int progress = 99, cleanedDays, seconds;
     private boolean flagLoad, flagClean;
-    private double contamination, decCont = 0;
-    private float cleanedGrams;
+    private float contamination, cleanedGrams, minutes, decCont = 0;
     private User user;
 
     @Nullable
@@ -59,11 +56,10 @@ public class FragmentPower extends Fragment {
 
         sessionManager = SessionManager.getInstance(getContext());
 
-        tiempoInicial = sessionManager.getDataMilliseconds();
         cleanedGrams = sessionManager.getCleanedGrams();
         cleanedDays = sessionManager.getCleanedDays();
 
-        loadInfo();
+        loadUserInfo();
         runThreads();
         onClickMethods();
 
@@ -80,21 +76,20 @@ public class FragmentPower extends Fragment {
                     if (progress > 99) {
                         progress = 99;
                     }
-                    sessionManager.setDataMilliseconds(Calendar.getInstance().getTimeInMillis());
-                    tiempoInicial = sessionManager.getDataMilliseconds();
                     cleanedGrams = (float) (cleanedGrams + contamination);
                     tvCleanedGrams.setText(new DecimalFormat("##.##").format(cleanedGrams));
                     sessionManager.setCleanedGrams(cleanedGrams);
                     decCont = contamination / 100;
+                    sessionManager.setSecondsActive(0);
+
                     Calendar calendar = Calendar.getInstance();
                     String cleanedDate = calendar.get(Calendar.MONTH) + " " + calendar.get(Calendar.DAY_OF_MONTH) + " " + calendar.get(Calendar.YEAR);
                     String lastCleanedDate = sessionManager.getCleanedDate();
                     if (!cleanedDate.equals(lastCleanedDate)) {
-                        cleanedDays++;
-                        sessionManager.setCleanedDays(cleanedDays);
+                        sessionManager.setCleanedDays(cleanedDays++);
                         sessionManager.setCleanedDate(cleanedDate);
                     }
-                    loadInfo();
+                    loadUserInfo();
                 }
             }
         });
@@ -107,7 +102,7 @@ public class FragmentPower extends Fragment {
         cleanContainer();
     }
 
-    private void loadInfo() {
+    private void loadUserInfo() {
         if (progress > 99) {
             progress = 99;
         }
@@ -115,7 +110,6 @@ public class FragmentPower extends Fragment {
         tvTitle.setText(user.getTitle());
         tvGrade.setText("GRADO " + user.getGrade());
         tvCleanedDays.setText(user.getCleanedDays() + "");
-        //icMedal.setImageDrawable(user.getIcMedal());
         tvCleanedGrams.setText(new DecimalFormat("##.##").format(cleanedGrams));
     }
 
@@ -128,11 +122,10 @@ public class FragmentPower extends Fragment {
             public void run() {
                 while (true) {
                     if (!flagClean) {
-                        tiempoActual = Calendar.getInstance().getTimeInMillis();
-                        milisegundos = tiempoActual - tiempoInicial;
-                        minutos = (int) (milisegundos / (60 * 1000));
-                        progress = (int) (minutos * 100) / 1440;
-                        contamination = minutos * Constants.CO2;
+                        seconds = sessionManager.getSecondsActive();
+                        minutes = seconds / Constants.SECONDS_MINUTE;
+                        progress = (int) (minutes * 100) / Constants.MINUTES_DAY;
+                        contamination = (float) (minutes * Constants.CO2);
                         try {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override

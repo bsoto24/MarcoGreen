@@ -61,9 +61,9 @@ public class WaterProgress extends View {
     private void init() {
         /*BORDES*/
         circlePaint = new Paint();
-        circlePaint.setColor(ContextCompat.getColor(getContext(), R.color.yellow));
+        circlePaint.setColor(ContextCompat.getColor(getContext(), R.color.trans));
         circlePaint.setStrokeWidth(0);
-        circlePaint.setAntiAlias(false);
+        circlePaint.setAntiAlias(true);
         circlePaint.setStyle(Paint.Style.STROKE);
     }
 

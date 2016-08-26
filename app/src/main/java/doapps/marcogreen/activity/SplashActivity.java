@@ -4,32 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.TextView;
-
-import java.util.Calendar;
-import java.util.Random;
-
 import doapps.marcogreen.R;
-import doapps.marcogreen.session.SessionManager;
-import pl.droidsonroids.gif.GifImageView;
 
 /**
  * Created by Bryam Soto on 10/08/2016.
  */
 public class SplashActivity extends AppCompatActivity {
 
-    private SessionManager sessionManager;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
-        sessionManager = SessionManager.getInstance(getBaseContext());
-        if (sessionManager.getDataMilliseconds() == 0) {
-            sessionManager.setDataMilliseconds(Calendar.getInstance().getTimeInMillis());
-        }
-
         Thread splashThread = new Thread() {
             @Override
             public void run() {
