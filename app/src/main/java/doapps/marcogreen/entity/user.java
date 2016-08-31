@@ -102,4 +102,14 @@ public class User {
     public void setIcMedal(Drawable icMedal) {
         this.icMedal = icMedal;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "title='" + title + '\'' +
+                ", grade=" + grade +
+                ", cleanedDays=" + cleanedDays +
+                ", icMedal=" + icMedal +
+                '}';
+    }
 }

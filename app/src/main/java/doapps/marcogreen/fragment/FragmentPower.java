@@ -3,6 +3,7 @@ package doapps.marcogreen.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +35,69 @@ public class FragmentPower extends Fragment {
     private int progress = 99, cleanedDays, seconds;
     private boolean flagLoad, flagClean;
     private float contamination, cleanedGrams, minutes, decCont = 0;
+    private String lastCleanedDate;
     private User user;
+
+    private Thread loadThread = new Thread() {
+        @Override
+        public void run() {
+            while (true) {
+                if (!flagClean) {
+                    seconds = sessionManager.getSecondsActive();
+                    minutes = seconds / Constants.SECONDS_MINUTE;
+                    progress = (int) (minutes * 100) / Constants.MINUTES_DAY;
+                    contamination = (float) (minutes * Constants.CO2);
+                    try {
+                        if (getActivity() != null)
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tvScore.setText(new DecimalFormat("##.##").format(contamination) + " gr. de CO2\ncontaminado");
+                                    if (progress < 99 && flagLoad) {
+                                        waterProgress.setProgress(progress);
+                                    } else {
+                                        waterProgress.setProgress(99);
+                                        flagLoad = false;
+                                    }
+                                }
+                            });
+                        sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    };
+
+    private Thread cleanThread = new Thread() {
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    if (progress > 0 && flagClean && !flagLoad) {
+                        progress--;
+                        contamination = contamination - decCont;
+                        if (getActivity() != null)
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    waterProgress.setProgress(progress);
+                                    tvScore.setText(new DecimalFormat("##.##").format(contamination) + " gr. de CO2\ncontaminado");
+                                }
+                            });
+                    } else {
+                        flagClean = false;
+                        flagLoad = true;
+                    }
+                    sleep(60);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
+
 
     @Nullable
     @Override
@@ -58,6 +121,7 @@ public class FragmentPower extends Fragment {
 
         cleanedGrams = sessionManager.getCleanedGrams();
         cleanedDays = sessionManager.getCleanedDays();
+        lastCleanedDate = sessionManager.getCleanedDate();
 
         loadUserInfo();
         runThreads();
@@ -81,12 +145,11 @@ public class FragmentPower extends Fragment {
                     sessionManager.setCleanedGrams(cleanedGrams);
                     decCont = contamination / 100;
                     sessionManager.setSecondsActive(0);
-
                     Calendar calendar = Calendar.getInstance();
                     String cleanedDate = calendar.get(Calendar.MONTH) + " " + calendar.get(Calendar.DAY_OF_MONTH) + " " + calendar.get(Calendar.YEAR);
-                    String lastCleanedDate = sessionManager.getCleanedDate();
                     if (!cleanedDate.equals(lastCleanedDate)) {
-                        sessionManager.setCleanedDays(cleanedDays++);
+                        cleanedDays++;
+                        sessionManager.setCleanedDays(cleanedDays);
                         sessionManager.setCleanedDate(cleanedDate);
                     }
                     loadUserInfo();
@@ -117,67 +180,21 @@ public class FragmentPower extends Fragment {
      * Thread methods
      **/
     private void loadContainer() {
-        Thread loadThread = new Thread() {
-            @Override
-            public void run() {
-                while (true) {
-                    if (!flagClean) {
-                        seconds = sessionManager.getSecondsActive();
-                        minutes = seconds / Constants.SECONDS_MINUTE;
-                        progress = (int) (minutes * 100) / Constants.MINUTES_DAY;
-                        contamination = (float) (minutes * Constants.CO2);
-                        try {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    tvScore.setText(new DecimalFormat("##.##").format(contamination) + " gr. de CO2\ncontaminado");
-                                    if (progress < 99 && flagLoad) {
-                                        waterProgress.setProgress(progress);
-                                    } else {
-                                        waterProgress.setProgress(99);
-                                        flagLoad = false;
-                                    }
-                                }
-                            });
-                            sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        };
-        loadThread.start();
+        try{
+            loadThread.start();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     private void cleanContainer() {
-        Thread cleanThread = new Thread() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        if (progress > 0 && flagClean && !flagLoad) {
-                            progress--;
-                            contamination = contamination - decCont;
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    waterProgress.setProgress(progress);
-                                    tvScore.setText(new DecimalFormat("##.##").format(contamination) + " gr. de CO2\ncontaminado");
-                                }
-                            });
-                        } else {
-                            flagClean = false;
-                            flagLoad = true;
-                        }
-                        sleep(60);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-        cleanThread.start();
+        try {
+            cleanThread.start();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
 }

@@ -36,12 +36,16 @@ public class NotifyService extends Service {
             public void run() {
                 while (true) {
                     try {
-                        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-                        if (powerManager.isInteractive()) {
-                            SessionManager.getInstance(getBaseContext()).addSecondActive();
-                        }
                         if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) == 10 && Calendar.getInstance().get(Calendar.MINUTE) == 0 && Calendar.getInstance().get(Calendar.SECOND) == 0) {
                             notification();
+                        }
+                        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+                            PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+                            if (powerManager.isInteractive()) {
+                                SessionManager.getInstance(getBaseContext()).addSecondActive();
+                            }
+                        }else{
+                            SessionManager.getInstance(getBaseContext()).addSecondActive();
                         }
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
