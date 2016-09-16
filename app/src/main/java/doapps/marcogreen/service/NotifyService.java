@@ -19,6 +19,7 @@ import java.util.Calendar;
 import doapps.marcogreen.R;
 import doapps.marcogreen.activity.MainActivity;
 import doapps.marcogreen.session.SessionManager;
+import doapps.marcogreen.settings.Constants;
 
 /**
  * Created by Bryam Soto on 17/08/2016.
@@ -35,18 +36,21 @@ public class NotifyService extends Service {
             @Override
             public void run() {
                 while (true) {
-                    try {
-                        if (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) == 10 && Calendar.getInstance().get(Calendar.MINUTE) == 0 && Calendar.getInstance().get(Calendar.SECOND) == 0) {
-                            notification();
-                        }
-                        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-                            PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-                            if (powerManager.isInteractive()) {
-                                SessionManager.getInstance(getBaseContext()).addSecondActive();
-                            }
-                        }else{
+                    Calendar calendar = Calendar.getInstance();
+                    if (calendar.get(Calendar.HOUR_OF_DAY) == Constants.NOTIF_HOUR
+                            && calendar.get(Calendar.MINUTE) == Constants.NOTIF_MINUTE
+                            && calendar.get(Calendar.SECOND) == Constants.NOTIF_SECOND) {
+                        notification();
+                    }
+                    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+                        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+                        if (powerManager.isInteractive()) {
                             SessionManager.getInstance(getBaseContext()).addSecondActive();
                         }
+                    } else {
+                        SessionManager.getInstance(getBaseContext()).addSecondActive();
+                    }
+                    try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();

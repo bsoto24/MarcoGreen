@@ -8,4 +8,8 @@ public class Constants {
     public final static int MINUTES_DAY = 1440;
     public final static int SECONDS_MINUTE = 60;
     public final static String SHARE_LINK = "http://larepublica.pe/12-11-2014/cade-2014-carbono-neutral-para-darle-un-respiro-al-ambiente";
+    public final static int NOTIF_HOUR = 10;
+    public final static int NOTIF_MINUTE = 0;
+    public final static int NOTIF_SECOND = 0;
+
 }

@@ -1,8 +1,10 @@
 package doapps.marcogreen.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +39,7 @@ public class FragmentPower extends Fragment {
     private float contamination, cleanedGrams, minutes, decCont = 0;
     private String lastCleanedDate;
     private User user;
+    private AlertDialog alert;
 
     private Thread loadThread = new Thread() {
         @Override
@@ -135,6 +138,26 @@ public class FragmentPower extends Fragment {
             @Override
             public void onClick(View view) {
                 if (!flagClean) {
+                    createNotifyDialog();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(2000);
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        alert.show();
+                                    }
+                                });
+                                Thread.sleep(2000);
+                                alert.cancel();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+
                     flagClean = true;
                     flagLoad = false;
                     if (progress > 99) {
@@ -156,6 +179,7 @@ public class FragmentPower extends Fragment {
                 }
             }
         });
+
     }
 
     private void runThreads() {
@@ -180,9 +204,9 @@ public class FragmentPower extends Fragment {
      * Thread methods
      **/
     private void loadContainer() {
-        try{
+        try {
             loadThread.start();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -191,10 +215,17 @@ public class FragmentPower extends Fragment {
     private void cleanContainer() {
         try {
             cleanThread.start();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
+    public void createNotifyDialog() {
+        LayoutInflater inflater = getLayoutInflater(Bundle.EMPTY);
+        View dialoglayout = inflater.inflate(R.layout.dialog_custom, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setView(dialoglayout);
+        alert = builder.create();
+    }
 }

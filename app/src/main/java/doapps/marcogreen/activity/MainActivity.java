@@ -3,10 +3,12 @@ package doapps.marcogreen.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -131,6 +133,9 @@ public class MainActivity extends AppCompatActivity {
         icShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                showNotifyDialog();
+
                 try {
                     SessionManager sessionManager = SessionManager.getInstance(getBaseContext());
                     double cleanedGrams = sessionManager.getCleanedGrams();
@@ -146,5 +151,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void showNotifyDialog() {
+        LayoutInflater inflater = getLayoutInflater();
+        View dialoglayout = inflater.inflate(R.layout.dialog_custom, null);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialoglayout);
+        Handler h = new Handler();
+        h.postAtTime(new Runnable() {
+            @Override
+            public void run() {
+                builder.show();
+            }
+        }, 10000);
     }
 }
