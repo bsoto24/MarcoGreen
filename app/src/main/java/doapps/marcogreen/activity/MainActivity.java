@@ -134,8 +134,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                showNotifyDialog();
-
                 try {
                     SessionManager sessionManager = SessionManager.getInstance(getBaseContext());
                     double cleanedGrams = sessionManager.getCleanedGrams();
@@ -153,17 +151,4 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void showNotifyDialog() {
-        LayoutInflater inflater = getLayoutInflater();
-        View dialoglayout = inflater.inflate(R.layout.dialog_custom, null);
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(dialoglayout);
-        Handler h = new Handler();
-        h.postAtTime(new Runnable() {
-            @Override
-            public void run() {
-                builder.show();
-            }
-        }, 10000);
-    }
 }
